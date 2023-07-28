@@ -4,7 +4,7 @@ import numpy as np
 
 # Define the timeframe and the number of periods for historical data
 timeframe = '1d'  # 1 day
-periods = 7  # last 7 days
+periods = 1  # last 7 days
 
 # Initialize the exchange
 exchange = ccxt.binanceusdm({
