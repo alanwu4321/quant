@@ -43,6 +43,7 @@ class VirtualExchange:
         self.balance = initial_balance
         self.holdings = 0
         self.position = 0  # 0: 空倉，1: 多倉
+        self.profits = [initial_balance]  # 紀錄獲利的列表，起始值為初始資金
 
     def place_order(self, symbol, price, quantity, side):
         if side == 'buy':
@@ -53,6 +54,9 @@ class VirtualExchange:
             self.holdings -= quantity
             self.balance += price * quantity
             self.position = 0
+
+        # 更新套利策略的績效曲線
+        self.profits.append(self.balance + self.holdings * price)
 
     def get_balance(self):
         return self.balance + self.holdings * data['okex'].price[-1]
@@ -124,7 +128,8 @@ def update(i):
     axs[0].plot(data['okex'].time, data['okex'].price, label='okex')
     axs[0].legend()
 
-    axs[1].plot(data['okex'].time, [virtual_binance.balance + virtual_binance.holdings * price for price in data['okex'].price], label='Virtual Balance (binance-u)')
+    # 將套利策略的資產曲線顯示在資金曲線圖中
+    axs[1].plot(data['okex'].time, virtual_binance.profits, label='Arbitrage Strategy')
     axs[1].legend()
 
     # Update title to show MDD
